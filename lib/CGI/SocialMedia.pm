@@ -3,6 +3,7 @@ package CGI::SocialMedia;
 use warnings;
 use strict;
 use CGI::Lingua;
+use I18N::LangTags::Detect;
 
 =head1 NAME
 
@@ -10,16 +11,16 @@ CGI::SocialMedia - Put social media links into your website
 
 =head1 VERSION
 
-Version 0.01
+Version 0.02
 
 =cut
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 =head1 SYNOPSIS
 
 Many websites these days have links and buttons into social media sites.
-This module eases their addition.
+This module eases their addition into Twitter, Facebook and Google's PlusOne.
 
     use CGI::SocialMedia;
 
@@ -46,8 +47,26 @@ twitter: twitter account name
 sub new {
 	my ($class, %params) = @_;
 
+	my $lingua;
+	if($params{twitter}) {
+		# Languages supported by Twitter according to
+		# https://twitter.com/about/resources/tweetbutton
+		$lingua = CGI::Lingua->new(supported => ['en', 'nl', 'fr', 'de', 'id', 'il', 'ja', 'ko', 'pt', 'ru', 'es', 'tr']),
+	} else {
+		# Facebook supports just about everything
+		my @l = I18N::LangTags::Detect::detect();
+		if(@l) {
+			my $lang = $l[0];
+			$lang =~ s/-/_/;
+			$lingua = CGI::Lingua->new(supported => [$lang]);
+		}
+		unless($lingua) {
+			$lingua = CGI::Lingua->new(supported => []);
+		}
+	}
+
 	my $self = {
-		_lingua => CGI::Lingua->new(supported => []),
+		_lingua => $lingua,
 		_twitter => $params{twitter},
 	};
 	bless $self, $class;
@@ -112,7 +131,7 @@ sub as_string {
 				s.type = 'text/javascript';
 				s.async = true;
 END
-		print "s.src = 'http://connect.facebook.net/$alpha2/all.js#xfbml=1';";
+		$rc .= "s.src = 'http://connect.facebook.net/$alpha2/all.js#xfbml=1';";
 
 		$rc .= << 'END';
 			s1.parentNode.insertBefore(s, s1);
@@ -145,6 +164,8 @@ END
 Nigel Horne, C<< <njh at bandsman.co.uk> >>
 
 =head1 BUGS
+
+The multilingual support for the Facebook button doesn't yet work.
 
 Please report any bugs or feature requests to C<bug-cgi-socialmedia at rt.cpan.org>, or through
 the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=CGI-SocialMedia>.  I will be notified, and then you'll

@@ -15,6 +15,7 @@ WriteMakefile(
         'Test::More' => 0.82,	# Needs new_ok
 	'Test::NoWarnings' => 0,
 	'CGI::Lingua' => 0,
+	'I18N::LangTags::Detect' => 0,
     },
     dist                => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
     clean               => { FILES => 'CGI-SocialMedia-*' },

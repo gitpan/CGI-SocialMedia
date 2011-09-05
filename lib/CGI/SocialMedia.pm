@@ -11,16 +11,16 @@ CGI::SocialMedia - Put social media links into your website
 
 =head1 VERSION
 
-Version 0.02
+Version 0.03
 
 =cut
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 =head1 SYNOPSIS
 
 Many websites these days have links and buttons into social media sites.
-This module eases their addition into Twitter, Facebook and Google's PlusOne.
+This module eases links into Twitter, Facebook and Google's PlusOne.
 
     use CGI::SocialMedia;
 
@@ -77,6 +77,8 @@ sub new {
 =head2 as_string
 
 Returns the HTML to be added to your website.
+CGI::SocialMedia used CGI::Lingua to try to ensure that the text printed is in the
+language of the user.
 
 	my $sm = CGI::SocialMedia->new(twitter => 'mytwittername');
 
@@ -164,8 +166,6 @@ END
 Nigel Horne, C<< <njh at bandsman.co.uk> >>
 
 =head1 BUGS
-
-The multilingual support for the Facebook button doesn't yet work.
 
 Please report any bugs or feature requests to C<bug-cgi-socialmedia at rt.cpan.org>, or through
 the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=CGI-SocialMedia>.  I will be notified, and then you'll

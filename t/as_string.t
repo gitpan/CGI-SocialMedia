@@ -2,7 +2,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 9;
+use Test::More tests => 10;
 use Test::NoWarnings;
 
 BEGIN {
@@ -17,7 +17,10 @@ ROBOT: {
 	ok(!defined($sm->as_string()));
 	ok(defined($sm->as_string(twitter_follow_button => 1)));
 
-	$ENV{'HTTP_ACCEPT_LANGUAGE'} = 'fr';
+	$ENV{'REQUEST_METHOD'} = 'GET';
+	$ENV{'HTTP_ACCEPT_LANGUAGE'} = 'fr-FR';
+	$ENV{'HTTP_USER_AGENT'} = 'Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.6; fr-FR; rv:1.9.2.19) Gecko/20110707 Firefox/3.6.19';
 	$sm = new_ok('CGI::SocialMedia' => []);
 	ok(defined($sm->as_string(facebook_like_button => 1)));
+	ok($sm->as_string(facebook_like_button => 1) =~ /fr_FR/);
 }
